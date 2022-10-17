@@ -1,48 +1,108 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import Counter from './lib/Counter.svelte'
+  import svelteLogo from "./assets/svelte.svg";
+  import Counter from "./lib/Counter.svelte";
   let text = "";
 </script>
 
 <main>
-  <div>
-    <a href="https://vitejs.dev" target="_blank"> 
-      <img src="/vite.svg" class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank"> 
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+  <div id="site-container">
+    <div id="container">
+      <h1><b>Table title</b></h1>
+      <table>
+        <thead>
+          <tr id="summary">
+            <th>
+              <h2><b>CO2E emissions per year</b></h2>
+            </th>
+            <td />
+            <td>
+              <h2><b>2.8t</b></h2>
+            </td>
+          </tr>
+        </thead>
+      </table>
+      <table>
+        <thead>
+          <tr><th><b>Total Transportation</b></th><td /><td><b>32kg</b></td></tr
+          >
+        </thead>
+        <tbody>
+          <tr>
+            <th>Gasoline car miles per week</th>
+            <td>26</td><td><b>32.9kg</b></td>
+          </tr>
+          <tr>
+            <th>Bus miles per week</th>
+            <td>26</td><td><b>32.9kg</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <p>Hi my name is {text}</p>
-    <input type="text" bind:value={text} />
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
+  :root {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.5em;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+  #site-container {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    place-items: center;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+  #container {
+    border: 2px solid black;
+    min-width: 480px;
+    min-width: 480px;
+    padding: 0.5em;
   }
-  .read-the-docs {
-    color: #888;
+
+  h1 {
+    font-size: 2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  h2 {
+    font-size: 1.4em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  b {
+    font-weight: bold;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  #summary {
+    border-bottom: 8px solid black;
+  }
+
+  thead td,
+  thead th {
+    padding-left: 0px;
+  }
+
+  td,
+  th {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    border-top: 2px solid black;
+  }
+
+  th {
+    padding-left: 1em;
+    text-align: left;
+  }
+
+  td {
+    text-align: right;
   }
 </style>
