@@ -1,6 +1,10 @@
 <script lang="ts">
+  import { setContext } from "svelte";
+  import { writable } from "svelte/store";
   import svelteLogo from "./assets/svelte.svg";
   import Counter from "./lib/Counter.svelte";
+  import LineItem from "./lib/LineItem.svelte";
+  import Section from "./lib/Section.svelte";
   let tableTitle = "Table Title";
   let textReadOnly = false;
 
@@ -19,10 +23,16 @@
   $: transportationTotalKg = carKgPerYear + busKgPerYear;
 
   $: totalT = transportationTotalKg / 1000;
+
+  const editing = writable(false);
+  setContext("editing", editing);
 </script>
 
 <main>
   <div id="site-container">
+    <button on:click={() => editing.update((e) => !e)}>
+      Toggle Read Only
+    </button>
     <div id="container">
       <h1>
         <b
@@ -47,151 +57,22 @@
           </tr>
         </thead>
       </table>
-      <table>
-        <thead>
-          <tr
-            ><th><b>Total Transportation</b></th><td /><td
-              ><b>{transportationTotalKg.toFixed(0)}kg</b></td
-            ></tr
-          >
-        </thead>
-        <tbody>
-          <tr>
-            <th>Gasoline car miles per week</th>
-            <td
-              ><input
-                id="form-field"
-                type="number"
-                bind:value={carMilesPerWeek}
-                readonly={textReadOnly}
-              /></td
-            ><td><b>{carKgPerYear.toFixed(0)}kg</b></td>
-          </tr>
-          <tr>
-            <th>Car miles per gallon</th>
-            <td
-              ><input
-                id="form-field"
-                type="number"
-                bind:value={carMPG}
-                readonly={textReadOnly}
-              /></td
-            ><td />
-          </tr>
-          <tr>
-            <th>Bus miles per week</th>
-            <td
-              ><input
-                id="form-field"
-                type="number"
-                bind:value={busMilesPerWeek}
-                readonly={textReadOnly}
-              /></td
-            ><td><b>{busKgPerYear.toFixed(0)}kg</b></td>
-          </tr>
-        </tbody>
-      </table>
+      <Section title="Total transportation" total={transportationTotalKg}>
+        <LineItem
+          title="Car miles per week"
+          bind:inputValue={carMilesPerWeek}
+          outputValue={carKgPerWeek}
+        />
+        <LineItem title="Car miles per gallon" bind:inputValue={carMPG} />
+        <LineItem
+          title="Bus miles per week"
+          bind:inputValue={busMilesPerWeek}
+          outputValue={busKgPerWeek}
+        />
+      </Section>
     </div>
   </div>
 </main>
 
 <style>
-  :root,
-  input {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 18px;
-    line-height: 1.5em;
-  }
-
-  /* INPUTS */
-
-  input {
-    border: none;
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-  }
-  input[type="text"],
-  h1 {
-    font-size: 1.5em;
-    font-weight: bold;
-    margin-top: 0.2em;
-    margin-bottom: 0.2em;
-  }
-  input[type="number"] {
-    max-width: 3em;
-    margin-left: 1em;
-    margin-right: 1em;
-    text-align: right;
-    -moz-appearance: textfield;
-  }
-
-  textarea:focus,
-  input:focus {
-    outline: none;
-  }
-
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-  }
-
-  /* Firefox */
-  input[type="number"] {
-    -moz-appearance: textfield;
-  }
-
-  #site-container {
-    width: 100vw;
-    height: 100vh;
-    display: grid;
-    place-items: center;
-  }
-  #container {
-    border: 2px solid black;
-    min-width: 480px;
-    min-width: 480px;
-    padding: 0.5em;
-  }
-
-  h2 {
-    font-size: 1.4em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-
-  b {
-    font-weight: bold;
-  }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  #summary {
-    border-bottom: 8px solid black;
-  }
-
-  thead td,
-  thead th {
-    padding-left: 0px;
-  }
-
-  td,
-  th {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    border-top: 2px solid black;
-  }
-  th {
-    padding-left: 1em;
-    text-align: left;
-  }
-  td {
-    text-align: right;
-  }
 </style>
