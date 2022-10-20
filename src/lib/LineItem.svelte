@@ -1,34 +1,70 @@
 <script lang="ts">
-    import { getContext } from "svelte";
-    export let title: string;
-    export let inputValue: number;
-    export let outputValue: null|number = null;
-    const editing = getContext("editing");
+  import { getContext } from "svelte";
+  export let title: string;
+  export let inputValue: number;
+  export let outputValue: null | number = null;
+  export let indentLevel: number = 0;
+  const editing = getContext("editing");
 </script>
 
-<tr>
-    <th>{title}</th>
-    <td>
-        <input
-        id="form-field"
+<div id="container" style="margin-left: calc(1em * {indentLevel});">
+  <div class="left">
+    <h3>{title}</h3>
+  </div>
+  <div class="right">
+    <div class="right-content">
+      <input
         type="number"
         bind:value={inputValue}
         disabled={!$editing}
         class:editable={$editing}
       />
-    </td>
-      
-      <td>
-        {#if outputValue !== null}
-        <b>
-          {outputValue.toFixed(0)}kg
-        </b>
-        {/if}
-    </td>
-  </tr>
+    </div>
+    <div class="right-content" id="output">
+      {#if outputValue !== null}
+        <h3>{outputValue.toFixed(0)}kg</h3>
+      {/if}
+    </div>
+  </div>
+</div>
 
-  <style>
-    .editable {
-        color: red;
-    }
-    </style>
+<style>
+  #container {
+    height: 2em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--color-primary);
+  }
+
+  input {
+    font-size: var(--h3-font-size);
+  }
+
+  input {
+    text-align: right;
+    float: right;
+    width: 100%;
+  }
+
+  .left {
+    float: left;
+  }
+
+  .right {
+    float: right;
+    display: flex;
+    align-items: center;
+  }
+
+  .right-content {
+    text-align: right;
+    width: 4em;
+  }
+
+  #output {
+    font-weight: bold;
+  }
+</style>
