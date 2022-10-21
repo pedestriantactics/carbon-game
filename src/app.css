@@ -154,7 +154,8 @@ p,
 h1,
 h2,
 h3,
-input {
+input,
+button {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.1em;
   color: var(--color-primary);
@@ -198,6 +199,8 @@ button {
   color: var(--color-secondary);
   background-color: var(--color-primary);
   border: none;
+  padding: .3rem;
+  margin: 0;
 }
 
 /* INPUTS */
