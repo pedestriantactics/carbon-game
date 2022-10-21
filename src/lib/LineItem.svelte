@@ -5,13 +5,9 @@
   export let outputValue: null | number = null;
   export let indentLevel: number = 0;
   const editing = getContext("editing");
-  import colorPrimary from "../App.svelte";
 </script>
 
-<div
-  id="container"
-  style="margin-left: calc(1em * {indentLevel}); --color-primary: {colorPrimary};"
->
+<div id="container" style="margin-left: calc(1em * {indentLevel});">
   <div class="left">
     <h3>{title}</h3>
   </div>
