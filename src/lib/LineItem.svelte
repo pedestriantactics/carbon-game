@@ -30,7 +30,7 @@
 
 <style>
   #container {
-    height: 2em;
+    height: 1.8em;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     display: flex;

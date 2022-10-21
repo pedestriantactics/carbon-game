@@ -145,10 +145,10 @@ input {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5em;
-  --color-primary: red;
-  --color-secondary: white;
+  --color-primary: rgb(255, 186, 82);
+  --color-secondary: rgb(255, 66, 139);
   --h1-font-size: 3rem;
-  --h2-font-size: 1.4rem;
+  --h2-font-size: 2rem;
   --h3-font-size: 1.4rem;
 }
 
@@ -171,6 +171,8 @@ hr {
   height: 2px;
   background-color: var(--color-primary);
   border: none;
+  margin: 0;
+  padding: 0;
 }
 
 button {

@@ -29,7 +29,7 @@
 
 <style>
     #container {
-        height: 2em;
+        height: auto;
         padding-top: 0.5em;
         padding-bottom: 0.5em;
         display: flex;

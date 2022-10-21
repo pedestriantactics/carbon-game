@@ -47,6 +47,7 @@
         class:editable={$editing}
         readonly={textReadOnly}
       />
+      <hr />
       <SectionTitle
         title="Total C02E emissions"
         total={totalT}
@@ -72,7 +73,7 @@
       <hr class="thiccc" />
 
       <SectionTitle
-        title="Total transportation"
+        title="Ground transportation"
         total={transportationTotalKg}
       />
       <LineItem
@@ -92,6 +93,9 @@
         outputValue={busKgPerWeek}
         indentLevel={1}
       />
+      <div id="table-footer">
+        <p>Create your own at imdantaylor.com</p>
+      </div>
     </div>
   </div>
 </main>
@@ -99,10 +103,11 @@
 <style>
   .thiccc {
     height: 8px;
+    margin-top: 1rem;
   }
 
   p {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
   #top {
     position: absolute;
@@ -117,6 +122,10 @@
     width: 70%;
     font-size: var(--h1-font-size);
     font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  #table-footer {
+    margin-top: 1rem;
   }
 
   #site-container {
