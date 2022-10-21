@@ -138,18 +138,25 @@ table {
 /* end reset */
 
 /* TEXT */
-:root,
-input {
-  color: var(--color-primary);
-  background-color: var(--color-secondary);
+:root {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  line-height: 1.5em;
+  /* line-height: 1.5em; */
   --color-primary: rgb(255, 186, 82);
   --color-secondary: rgb(255, 66, 139);
   --h1-font-size: 3rem;
   --h2-font-size: 2rem;
   --h3-font-size: 1.4rem;
+}
+
+body,
+p,
+h1,
+h2,
+h3,
+input {
+  line-height: 1.1em;
+  color: var(--color-primary);
 }
 
 h1 {
@@ -162,6 +169,15 @@ h2 {
 
 h3 {
   font-size: var(--h3-font-size);
+}
+
+a,
+a:active,
+a:hover {
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-bottom: .2rem;
+  border-bottom: 1px solid var(--color-primary);
 }
 
 /* END TEXT */
