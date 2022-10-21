@@ -5,7 +5,6 @@
   export let outputValue: null | number = null;
   export let indentLevel: number = 0;
   const editing = getContext("editing");
-  import colorPrimary from "../App.svelte";
 </script>
 
 <div

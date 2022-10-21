@@ -237,17 +237,3 @@ input[type="number"] {
 }
 
 /* END INPUTS */
-
-tr {
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  border-top: 2px solid var(--color-primary);
-}
-
-th {
-  text-align: left;
-}
-
-td {
-  text-align: right;
-}
