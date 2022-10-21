@@ -1,4 +1,10 @@
 <script lang="ts">
+  // todo
+  // deal with the scrollbars in the why section
+  // figure out where to put examples
+  // figure out how to generate a share link
+  // add all the other data
+
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
   import LineItem from "./lib/LineItem.svelte";
