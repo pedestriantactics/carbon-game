@@ -14,7 +14,7 @@
   let secondaryHue = 10;
   export let colorPrimary = "#ff0000";
   export let colorSecondary = "#ff0000";
-  let tableTitle = "Table Title";
+  let tableTitle = "Recipe title";
   let textReadOnly = false;
 
   function hslToRgb(h: number, s: number, l: number): [number, number, number] {
@@ -180,7 +180,7 @@
           <div id="footer-container">
             <div class="color-container">
               <div class="color-title">
-                <h3>Table color</h3>
+                <h3>Recipe color</h3>
               </div>
               <input
                 class="color-slider"
