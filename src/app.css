@@ -160,6 +160,7 @@ button {
   line-height: 1.1em;
   color: var(--color-primary);
   border-radius: 0;
+  opacity: 100;
 }
 
 h1 {
