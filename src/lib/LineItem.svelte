@@ -40,7 +40,6 @@
   }
 
   input {
-    color: var(--color-primary);
     font-size: var(--h3-font-size);
     text-align: right;
     float: right;
