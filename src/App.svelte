@@ -236,6 +236,7 @@
 
 <style>
   :root {
+    color: var(--color-primary);
     --width: 640px;
   }
   .thiccc {

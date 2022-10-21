@@ -155,6 +155,7 @@ h1,
 h2,
 h3,
 input {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 1.1em;
   color: var(--color-primary);
 }
@@ -206,6 +207,7 @@ input {
   padding: 0;
   margin: 0;
   border: 2px solid transparent;
+  color: var(--color-primary);
 }
 
 input[type='number'] {
