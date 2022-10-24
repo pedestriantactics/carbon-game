@@ -529,7 +529,7 @@
 
   #table-container {
     margin-top: 4rem;
-    margin-bottom: 2em;
+    margin-bottom: 4rem;
     border: 2px solid var(--color-primary);
     padding: 0.5em;
   }
