@@ -21,6 +21,7 @@
     <div class="right-content">
       <input
         type="number"
+        inputmode="numeric"
         bind:value={inputValue}
         on:focus={(evt) => evt.target.select()}
         disabled={!$editing}
