@@ -407,7 +407,11 @@
 
           <!-- purchases -->
 
-          <SectionTitle title="Purchases per year" total={purchaseKgPerYear} />
+          <SectionTitle
+            title="Purchases"
+            detail="Made within the entire year"
+            total={purchaseKgPerYear}
+          />
 
           {#each purchaseValues as item}
             <LineItem
