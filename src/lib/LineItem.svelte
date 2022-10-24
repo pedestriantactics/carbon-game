@@ -47,6 +47,7 @@
   }
 
   input {
+    margin: -2px;
     font-size: var(--h3-font-size);
     text-align: right;
     float: right;
@@ -65,7 +66,7 @@
 
   .right-content {
     text-align: right;
-    width: 3em;
+    width: 4em;
   }
 
   #output {

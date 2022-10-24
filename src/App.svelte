@@ -514,7 +514,7 @@
     left: 0.5em;
   }
   .title {
-    width: 70%;
+    width: 100%;
     font-size: var(--h1-font-size);
     font-weight: bold;
     margin-bottom: 0.5rem;

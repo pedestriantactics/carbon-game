@@ -208,8 +208,9 @@ button {
 /* INPUTS */
 input {
   padding: 0;
-  margin: -2px;
+  margin: 0;
   border: 2px solid transparent;
+  box-sizing: border-box;
   color: var(--color-primary);
   background-color: transparent;
 }
