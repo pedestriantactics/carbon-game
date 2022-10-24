@@ -10,8 +10,8 @@
   import LineItem from "./lib/LineItem.svelte";
   import SectionTitle from "./lib/SectionTitle.svelte";
   import "slider-color-picker";
-  let primaryHue = 0;
-  let secondaryHue = 10;
+  let primaryHue = 220;
+  let secondaryHue = 200;
   export let colorPrimary = "#ff0000";
   export let colorSecondary = "#ff0000";
   let tableTitle = "Recipe title";
@@ -52,12 +52,12 @@
   }
 
   const onPrimaryColorChange = (event) => {
-    let rgb = hslToRgb(primaryHue, 90, 60);
+    let rgb = hslToRgb(primaryHue, 100, 60);
     colorPrimary = rgbToHex(rgb[0], rgb[1], rgb[2]);
   };
 
   const onSecondaryColorChange = (event) => {
-    let rgb = hslToRgb(secondaryHue, 100, 100);
+    let rgb = hslToRgb(secondaryHue, 100, 80);
     colorSecondary = rgbToHex(rgb[0], rgb[1], rgb[2]);
   };
 
@@ -125,10 +125,84 @@
   $: cookedGPerMeal = 150;
   $: cookedMealsKgPerYear = (cookedMealsPerWeek * cookedGPerMeal * 52) / 1000;
 
+  // home
+  let homeSquareFeet = 0;
+  let homeDegreesAdjustedDownInWinter = 0;
+  $: averageHouseKgForHeatingAndCooling = 2268;
+  $: averageSquareFootageOfHome = 2301;
+  $: totalKgFromHeating =
+    (homeSquareFeet / averageSquareFootageOfHome) *
+    averageHouseKgForHeatingAndCooling;
+  $: totalKgReduced =
+    totalKgFromHeating * 0.03 * homeDegreesAdjustedDownInWinter;
+  $: homeKgPerYear = totalKgFromHeating - totalKgReduced;
+
+  // electricity
+  $: KgPerKWhElectric = 0.39;
+
+  let lightbulbQuantity = 0;
+  let lightBulbHoursPerDay = 0;
+  $: lightBulbKgPerYear =
+    lightBulbHoursPerDay * 0.06 * lightbulbQuantity * KgPerKWhElectric * 365;
+
+  let computerHoursPerDay = 0;
+  $: computerKgPerYear = computerHoursPerDay * 0.047 * KgPerKWhElectric * 365;
+
+  let dishwasherUsesPerMonth = 0;
+  $: dishwasherKgPerYear =
+    dishwasherUsesPerMonth * 1.44 * KgPerKWhElectric * 12;
+
+  let clothesWasherUsesPerMonth = 0;
+  $: clothesWasherKgPerYear =
+    clothesWasherUsesPerMonth * 0.8 * KgPerKWhElectric * 12;
+
+  let clothesDryerUsesPerMonth = 0;
+  $: clothesDrykerKgPerYear =
+    clothesDryerUsesPerMonth * 2.5 * KgPerKWhElectric * 12;
+
+  let fridgeQuantity = 0;
+  $: fridgeKgPerYear = fridgeQuantity * 408 * KgPerKWhElectric;
+
+  $: totalElectricityKgPerYear =
+    lightBulbKgPerYear +
+    computerKgPerYear +
+    dishwasherKgPerYear +
+    clothesWasherKgPerYear +
+    clothesDrykerKgPerYear +
+    fridgeKgPerYear;
+
+  // water
+  let gallonsOfHotWaterUsedPerDay = 0;
+  $: hotWaterKgPerYear = gallonsOfHotWaterUsedPerDay * 0.39 * 0.26 * 365;
+
+  // purchases
+  // first number is kg per item
+  // second number quanity
+  // third number is kg per year
+  let purchaseValues: Array<[string, number, number, number]> = [
+    ["iPhone", 78, 0, 0],
+    ["Laptop or iPad", 422.5, 0, 0],
+    ["Furniture item", 47, 0, 0],
+    ["Clothing item", 33.4, 0, 0],
+    ["Car", 8000, 0, 0],
+  ];
+
+  $: purchaseKgPerYear = purchaseValues.reduce((total, item) => {
+    item[3] = item[2] * item[1];
+    return total + item[3];
+  }, 0);
+
   // total
-  $: totalT =
-    (transportationTotalKgPerYear + foodKgPerYear + cookedMealsKgPerYear) /
-    1000;
+  $: totalKgPerYear =
+    transportationTotalKgPerYear +
+    foodKgPerYear +
+    cookedMealsKgPerYear +
+    homeKgPerYear +
+    totalElectricityKgPerYear +
+    hotWaterKgPerYear +
+    purchaseKgPerYear;
+
+  $: totalT = totalKgPerYear / 1000;
 </script>
 
 <main
@@ -137,27 +211,23 @@
   use:onSecondaryColorChange
 >
   <div id="site-container">
-    <div id="top">
-      {#if !why}
-        <div class="right">
-          <button on:click={() => editing.update((e) => !e)}>
-            {#if $editing}Done editing{:else}Edit recipe{/if}
-          </button>
-        </div>
-      {/if}
-    </div>
-
-    <div id="bottom">
-      <div class="left">
-        <button
-          on:click={() => {
-            why = !why;
-            editing.update(() => false);
-          }}
-        >
-          {#if why}Okay cool{:else}Why?{/if}
+    {#if !why}
+      <div id="top-right">
+        <button on:click={() => editing.update((e) => !e)}>
+          {#if $editing}Done editing{:else}Edit recipe{/if}
         </button>
       </div>
+    {/if}
+
+    <div id="bottom-left">
+      <button
+        on:click={() => {
+          why = !why;
+          editing.update(() => false);
+        }}
+      >
+        {#if why}Okay cool{:else}Why?{/if}
+      </button>
     </div>
 
     {#if !why}
@@ -195,6 +265,8 @@
           </p>
 
           <hr class="thiccc" />
+
+          <!-- TRANSPORTATION -->
 
           <SectionTitle
             title="Transportation"
@@ -237,8 +309,11 @@
             note="250kg CO2e per hour"
           />
 
+          <!-- food -->
+
           <SectionTitle
-            title="Food (as servings per week)"
+            title="Food"
+            detail="Enter servings per week"
             total={foodKgPerYear}
           />
 
@@ -260,6 +335,90 @@
             note="{cookedGPerMeal}g emitted to cook a single meal"
           />
 
+          <!-- home -->
+
+          <SectionTitle title="Home" total={homeKgPerYear} />
+          <LineItem
+            title="Square feet"
+            detail="Divide if you have roommates"
+            bind:inputValue={homeSquareFeet}
+            indentLevel={1}
+          />
+          <LineItem
+            title="Degrees adjusted down in winter"
+            bind:inputValue={homeDegreesAdjustedDownInWinter}
+            indentLevel={1}
+          />
+
+          <!-- electricity -->
+
+          <SectionTitle title="Electricity" total={totalElectricityKgPerYear} />
+          <LineItem
+            title="Lightbulbs in home"
+            detail="Divide if you have roommates"
+            bind:inputValue={lightbulbQuantity}
+            indentLevel={1}
+          />
+          <LineItem
+            title="Lights hours per day"
+            bind:inputValue={lightBulbHoursPerDay}
+            outputValue={lightBulbKgPerYear}
+            indentLevel={2}
+          />
+          <LineItem
+            title="Laptop hours per day"
+            bind:inputValue={computerHoursPerDay}
+            outputValue={computerKgPerYear}
+            indentLevel={1}
+          />
+          <LineItem
+            title="Dishwasher uses per month"
+            bind:inputValue={dishwasherUsesPerMonth}
+            outputValue={dishwasherKgPerYear}
+            indentLevel={1}
+          />
+          <LineItem
+            title="Clothes washer uses per month"
+            bind:inputValue={clothesWasherUsesPerMonth}
+            outputValue={clothesWasherKgPerYear}
+            indentLevel={1}
+          />
+          <LineItem
+            title="Clothes dryer uses per month"
+            bind:inputValue={clothesDryerUsesPerMonth}
+            outputValue={clothesDrykerKgPerYear}
+            indentLevel={1}
+          />
+          <LineItem
+            title="Fridge quantity"
+            bind:inputValue={fridgeQuantity}
+            outputValue={fridgeKgPerYear}
+            indentLevel={1}
+          />
+
+          <!-- water -->
+
+          <LineItem
+            title="Gallons of hot water per day"
+            bind:inputValue={gallonsOfHotWaterUsedPerDay}
+            outputValue={hotWaterKgPerYear}
+            indentLevel={0}
+          />
+
+          <!-- purchases -->
+
+          <SectionTitle title="Purchases per year" total={purchaseKgPerYear} />
+
+          {#each purchaseValues as item}
+            <LineItem
+              title={item[0]}
+              bind:inputValue={item[2]}
+              outputValue={item[3]}
+              indentLevel={1}
+              note="{item[1]}kg CO2e per item"
+            />
+          {/each}
+
           <div id="table-footer">
             <p>A project by <a href="http://imdantaylor.com">Dan Taylor</a></p>
           </div>
@@ -279,19 +438,19 @@
                 on:input={onPrimaryColorChange}
               />
             </div>
-            <!-- <div class="color-container">
-            <div class="color-title">
-              <h3>Background color</h3>
+            <div class="color-container">
+              <div class="color-title">
+                <h3>Background color</h3>
+              </div>
+              <input
+                class="color-slider"
+                type="range"
+                min="0"
+                max="360"
+                bind:value={secondaryHue}
+                on:input={onSecondaryColorChange}
+              />
             </div>
-            <input
-              class="color-slider"
-              type="range"
-              min="0"
-              max="360"
-              bind:value={secondaryHue}
-              on:input={onSecondaryColorChange}
-            />
-          </div> -->
           </div>
         {/if}
       </div>
@@ -300,22 +459,22 @@
     {#if why}
       <div id="why-container">
         <div id="why-container-inner">
-          <p>
+          <h2>
             CO2 emissions are kind of like calories. They don’t represent
             overall health, but if you’re struggling with your weight, it’s a
             good place to start. On earth, CO2 emissions contribute to a buildup
             of greenhouse gases. Greenhouse gases trap heat, preventing it from
             dissipating into the atmosphere.
-          </p>
-          <p>
+          </h2>
+          <h2>
             We have been cranking out a staggeringly massive amount of CO2 in
             the last hundred years. All living things on this planet have
             handled gradual changes very well but quick changes to the
             environment are difficult to deal with. Curbing CO2 emissions to the
             EPA’s recommended 2.5 tons a year is one of the most effective
             things we can do to ensure our future.
-          </p>
-          <p>
+          </h2>
+          <p id="why-note">
             These recipes use C02e which means CO2 equivalent. Not everything
             generates CO2 itself, like running a lightbulb, but the approximate
             CO2 emitted to generate the power to run the lightbulb is what’s
@@ -329,9 +488,12 @@
 
 <style>
   :root {
+    /* this is because the background color actually doesn't update correctly */
+    background-color: black;
     color: var(--color-primary);
     --width: 640px;
   }
+
   .thiccc {
     height: 8px;
     margin-top: 1rem;
@@ -341,20 +503,15 @@
     margin-bottom: 0.5rem;
   }
 
-  #top {
+  #top-right {
     position: fixed;
     top: 0.5em;
     right: 0.5em;
-    left: 0.5em;
   }
-  #bottom {
+  #bottom-left {
     position: fixed;
     bottom: 0.5em;
-    right: 0.5em;
     left: 0.5em;
-  }
-  .right {
-    float: right;
   }
   .title {
     width: 70%;
@@ -371,13 +528,13 @@
   }
 
   #table-container {
+    margin-top: 4rem;
     margin-bottom: 2em;
     border: 2px solid var(--color-primary);
     padding: 0.5em;
   }
 
   #content-container {
-    margin-top: 4rem;
     margin-left: auto;
     margin-right: auto;
     padding: 0.5rem;
@@ -396,10 +553,10 @@
     padding: 0.5rem;
   }
 
-  #why-container-inner p {
+  #why-container-inner p,
+  #why-container-inner h2 {
     text-align: center;
-    font-size: var(--h2-font-size);
-    margin-bottom: 1em;
+    margin-bottom: 0.8em;
   }
 
   #summary {

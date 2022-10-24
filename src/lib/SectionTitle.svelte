@@ -1,5 +1,6 @@
 <script lang="ts">
     export let title: string;
+    export let detail: string = "";
     export let total: number;
     export let roundDigits: number = 0;
     export let suffix: string = "kg";
@@ -15,6 +16,9 @@
             <h2>{title}</h2>
         {:else}
             <h3>{title}</h3>
+        {/if}
+        {#if detail !== ""}
+            <p>{detail}</p>
         {/if}
     </div>
     <div class="right">
@@ -41,8 +45,8 @@
     input {
         width: 100px;
     }
-    .left,
-    .right {
+    h2,
+    h3 {
         font-weight: bold;
     }
     .left {

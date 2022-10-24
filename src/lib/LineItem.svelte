@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getContext } from "svelte";
   export let title: string;
+  export let detail: string = "";
   export let inputValue: number;
   export let outputValue: null | number = null;
   export let indentLevel: number = 0;
@@ -12,6 +13,9 @@
 <div id="container" style="margin-left: calc(1em * {indentLevel});">
   <div class="left">
     <h3>{title}</h3>
+    {#if detail !== ""}
+      <p>{detail}</p>
+    {/if}
   </div>
   <div class="right">
     <div class="right-content">
@@ -33,7 +37,7 @@
 
 <style>
   #container {
-    height: 1.8em;
+    /* height: 1.8em; */
     padding-top: 0.5em;
     padding-bottom: 0.5em;
     display: flex;
@@ -61,10 +65,11 @@
 
   .right-content {
     text-align: right;
-    width: 5em;
+    width: 3em;
   }
 
   #output {
     font-weight: bold;
+    width: 6em;
   }
 </style>
