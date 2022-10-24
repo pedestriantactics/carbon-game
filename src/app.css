@@ -207,11 +207,10 @@ button {
 
 /* INPUTS */
 input {
-  border: none;
-  background-color: transparent;
   padding: 0;
   margin: 0;
   border: 2px solid transparent;
+  border: none;
   color: var(--color-primary);
 }
 

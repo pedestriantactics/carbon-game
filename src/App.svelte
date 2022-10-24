@@ -81,9 +81,54 @@
   $: busKgPerWeek = (busMilesPerWeek * busGPerMile) / 1000;
   $: busKgPerYear = busKgPerWeek * 52;
 
-  $: transportationTotalKg = carKgPerYear + busKgPerYear;
+  let trainMilesPerWeek = 0;
+  $: trainGPerMile = 177;
+  $: trainKgPerWeek = (trainMilesPerWeek * trainGPerMile) / 1000;
+  $: trainKgPerYear = trainKgPerWeek * 52;
 
-  $: totalT = transportationTotalKg / 1000;
+  let flightHoursPerYear = 0;
+  $: flightKgPerYear = flightHoursPerYear * 250;
+
+  $: transportationTotalKgPerYear =
+    carKgPerYear + busKgPerYear + flightKgPerYear;
+
+  // food
+  // first number is grams per serving
+  // second number is servings per week
+  // third number is kg per year
+  let foodValues: Array<[string, number, number, number]> = [
+    ["Vegetables", 0.02, 0, 0],
+    ["Fruits", 0.01, 0, 0],
+    ["Nuts", 0.08, 0, 0],
+    ["Olive oil", 0.19, 0, 0],
+    ["Butter", 0.7, 0, 0],
+    ["Chicken", 0.04, 0, 0],
+    ["Eggs", 0.1, 0, 0],
+    ["Fish", 0.04, 0, 0],
+    ["Beef", 0.38, 0, 0],
+    ["Pork", 0.06, 0, 0],
+    ["Shrimp", 16.03, 0, 0],
+    ["Rice", 0.02, 0, 0],
+    ["Bread", 0.04, 0, 0],
+    ["Pastry", 0.12, 0, 0],
+    ["Beans", 0.02, 0, 0],
+    ["Coffee beans", 0.24, 0, 0],
+    ["Alcohol", 0.01, 0, 0],
+  ];
+
+  $: foodKgPerYear = foodValues.reduce((total, item) => {
+    item[3] = item[2] * item[1] * 52;
+    return total + item[3];
+  }, 0);
+
+  let cookedMealsPerWeek = 0;
+  $: cookedGPerMeal = 150;
+  $: cookedMealsKgPerYear = (cookedMealsPerWeek * cookedGPerMeal * 52) / 1000;
+
+  // total
+  $: totalT =
+    (transportationTotalKgPerYear + foodKgPerYear + cookedMealsKgPerYear) /
+    1000;
 </script>
 
 <main
@@ -128,7 +173,7 @@
           />
           <hr />
           <SectionTitle
-            title="Total yearly C02E emissions"
+            title="Total yearly C02e emissions"
             total={totalT}
             suffix="t"
             roundDigits={2}
@@ -152,14 +197,16 @@
           <hr class="thiccc" />
 
           <SectionTitle
-            title="Ground transportation"
-            total={transportationTotalKg}
+            title="Transportation"
+            total={transportationTotalKgPerYear}
           />
           <LineItem
             title="Car miles per week"
             bind:inputValue={carMilesPerWeek}
-            outputValue={carKgPerWeek}
+            outputValue={carKgPerYear}
             indentLevel={1}
+            note="8.8kg CO2e per gallon of gas"
+            reference="https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks-1990-2018?"
           />
           <LineItem
             title="Car miles per gallon"
@@ -169,9 +216,50 @@
           <LineItem
             title="Bus miles per week"
             bind:inputValue={busMilesPerWeek}
-            outputValue={busKgPerWeek}
+            outputValue={busKgPerYear}
             indentLevel={1}
+            note="0.2kg CO2e per mile"
+            reference="https://www.carbonindependent.org/20.html"
           />
+          <LineItem
+            title="Train miles per week"
+            bind:inputValue={trainMilesPerWeek}
+            outputValue={trainKgPerYear}
+            indentLevel={1}
+            note="0.17kg CO2e per mile"
+            reference="https://www.carbonindependent.org/20.html"
+          />
+          <LineItem
+            title="Flight hours per year"
+            bind:inputValue={flightHoursPerYear}
+            outputValue={flightKgPerYear}
+            indentLevel={1}
+            note="250kg CO2e per hour"
+          />
+
+          <SectionTitle
+            title="Food (as servings per week)"
+            total={foodKgPerYear}
+          />
+
+          {#each foodValues as item}
+            <LineItem
+              title={item[0]}
+              bind:inputValue={item[2]}
+              outputValue={item[3]}
+              indentLevel={1}
+              note="{item[1]}g CO2e per serving"
+            />
+          {/each}
+
+          <LineItem
+            title="Amount of hot meals per week"
+            bind:inputValue={cookedMealsPerWeek}
+            outputValue={cookedMealsKgPerYear}
+            indentLevel={0}
+            note="{cookedGPerMeal}g emitted to cook a single meal"
+          />
+
           <div id="table-footer">
             <p>A project by <a href="http://imdantaylor.com">Dan Taylor</a></p>
           </div>
@@ -213,21 +301,26 @@
       <div id="why-container">
         <div id="why-container-inner">
           <p>
-            The impact of most of our actions is hidden to us. Money has created
-            the illusion that we have earned the right to do things that we can
-            afford without seeing the big picture. If we base our decisions off
-            their ecological consequences we learn more and strengthen our
-            connection with this beautiful world we've been born into.
+            CO2 emissions are kind of like calories. They don’t represent
+            overall health, but if you’re struggling with your weight, it’s a
+            good place to start. On earth, CO2 emissions contribute to a buildup
+            of greenhouse gases. Greenhouse gases trap heat, preventing it from
+            dissipating into the atmosphere.
           </p>
           <p>
-            Whether you believe climate change was caused by us or not, we have
-            been churning out more C02 than any previous generation. The planet
-            can deal with this but humans can't breathe the stuff. The EPA has
-            set a strong recommendation that we reduce our yearly emissions to
-            2.5 tons per person. This is a tool to help you figure out how you
-            can do this for yourself.
+            We have been cranking out a staggeringly massive amount of CO2 in
+            the last hundred years. All living things on this planet have
+            handled gradual changes very well but quick changes to the
+            environment are difficult to deal with. Curbing CO2 emissions to the
+            EPA’s recommended 2.5 tons a year is one of the most effective
+            things we can do to ensure our future.
           </p>
-          <p>Share your strategy with your friends.</p>
+          <p>
+            These recipes use C02e which means CO2 equivalent. Not everything
+            generates CO2 itself, like running a lightbulb, but the approximate
+            CO2 emitted to generate the power to run the lightbulb is what’s
+            being factored.
+          </p>
         </div>
       </div>
     {/if}
@@ -292,7 +385,6 @@
   }
 
   #why-container {
-    padding: 0.5rem;
     width: 100vw;
     height: 100vh;
     display: grid;

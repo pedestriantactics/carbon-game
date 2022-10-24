@@ -4,6 +4,8 @@
   export let inputValue: number;
   export let outputValue: null | number = null;
   export let indentLevel: number = 0;
+  export let note: string = "";
+  export let reference: string = "";
   const editing = getContext("editing");
 </script>
 
@@ -16,6 +18,7 @@
       <input
         type="number"
         bind:value={inputValue}
+        on:focus={(evt) => evt.target.select()}
         disabled={!$editing}
         class:editable={$editing}
       />
@@ -58,7 +61,7 @@
 
   .right-content {
     text-align: right;
-    width: 4em;
+    width: 5em;
   }
 
   #output {

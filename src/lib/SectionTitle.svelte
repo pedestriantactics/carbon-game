@@ -5,6 +5,8 @@
     export let suffix: string = "kg";
     export let useH2: boolean = false;
     export let useRule: boolean = true;
+    export let note: string = "";
+    export let reference: string = "";
 </script>
 
 <div id="container">
