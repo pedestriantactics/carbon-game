@@ -1,21 +1,127 @@
 <script lang="ts">
-  // todo
-  // deal with the scrollbars in the why section
-  // figure out where to put examples
-  // figure out how to generate a share link
-  // add all the other data
-
-  import { setContext } from "svelte";
+  import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
   import LineItem from "./lib/LineItem.svelte";
   import SectionTitle from "./lib/SectionTitle.svelte";
   import "slider-color-picker";
+
+  let url = new URL(window.location.href);
+
+  function loadValue(key: string, defaultValue: string): string {
+    return (
+      url.searchParams.get(key) ?? localStorage.getItem(key) ?? defaultValue
+    );
+  }
+
+  function loadNumber(key: string, defaultValue: number): number {
+    return parseFloat(loadValue(key, defaultValue.toString()));
+  }
+
+  function storeValue(key: string, value: string) {
+    url.searchParams.set(key, value);
+    localStorage.setItem(key, value);
+  }
+
+  function storeNumber(key: string, value: number) {
+    if (!value) value = 0;
+    storeValue(key, value.toString());
+  }
+
   let primaryHue = 220;
   let secondaryHue = 200;
   export let colorPrimary = "#ff0000";
   export let colorSecondary = "#ff0000";
-  let tableTitle = "Recipe title";
+  let tableTitle = loadValue("tableTitle", "Example title") as string;
   let textReadOnly = false;
+
+  // functions
+
+  // let url = this.URL;
+  // history.pushState(null, null, "?");
+
+  // let params = new URLSearchParams(url.search);
+
+  // // Add a third parameter.
+  // params.set("baz", "2");
+
+  // var params = document.getElementById("params");
+  // var results = document.getElementById("results");
+
+  // document
+  //   .querySelector("input")
+  //   .addEventListener("keyup", encodeParameterToUrl(this.value));
+
+  // function encodeParameterToUrl(string) {
+  //   params.innerText = this.value;
+  //   results.innerText = JSON.stringify(
+  //     getAllUrlParams("http://test.com/?" + this.value),
+  //     null,
+  //     2
+  //   );
+  // }
+
+  // function getAllUrlParams(url) {
+  //   // get query string from url (optional) or window
+  //   var queryString = url ? url.split("?")[1] : window.location.search.slice(1);
+
+  //   // we'll store the parameters here
+  //   var obj = {};
+
+  //   // if query string exists
+  //   if (queryString) {
+  //     // stuff after # is not part of query string, so get rid of it
+  //     queryString = queryString.split("#")[0];
+
+  //     // split our query string into its component parts
+  //     var arr = queryString.split("&");
+
+  //     for (var i = 0; i < arr.length; i++) {
+  //       // separate the keys and the values
+  //       var a = arr[i].split("=");
+
+  //       // set parameter name and value (use 'true' if empty)
+  //       var paramName = a[0];
+  //       var paramValue = typeof a[1] === "undefined" ? true : a[1];
+
+  //       // (optional) keep case consistent
+  //       paramName = paramName.toLowerCase();
+  //       if (typeof paramValue === "string")
+  //         paramValue = paramValue.toLowerCase();
+
+  //       // if the paramName ends with square brackets, e.g. colors[] or colors[2]
+  //       if (paramName.match(/\[(\d+)?\]$/)) {
+  //         // create key if it doesn't exist
+  //         var key = paramName.replace(/\[(\d+)?\]/, "");
+  //         if (!obj[key]) obj[key] = [];
+
+  //         // if it's an indexed array e.g. colors[2]
+  //         if (paramName.match(/\[\d+\]$/)) {
+  //           // get the index value and add the entry at the appropriate position
+  //           var index = /\[(\d+)\]/.exec(paramName)[1];
+  //           obj[key][index] = paramValue;
+  //         } else {
+  //           // otherwise add the value to the end of the array
+  //           obj[key].push(paramValue);
+  //         }
+  //       } else {
+  //         // we're dealing with a string
+  //         if (!obj[paramName]) {
+  //           // if it doesn't exist, create property
+  //           obj[paramName] = paramValue;
+  //         } else if (obj[paramName] && typeof obj[paramName] === "string") {
+  //           // if property does exist and it's a string, convert it to an array
+  //           obj[paramName] = [obj[paramName]];
+  //           obj[paramName].push(paramValue);
+  //         } else {
+  //           // otherwise add the property
+  //           obj[paramName].push(paramValue);
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   return obj;
+  // }
 
   function hslToRgb(h: number, s: number, l: number): [number, number, number] {
     h = h % 360;
@@ -51,12 +157,12 @@
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   }
 
-  const onPrimaryColorChange = (event) => {
+  const onPrimaryColorChange = () => {
     let rgb = hslToRgb(primaryHue, 100, 60);
     colorPrimary = rgbToHex(rgb[0], rgb[1], rgb[2]);
   };
 
-  const onSecondaryColorChange = (event) => {
+  const onSecondaryColorChange = () => {
     let rgb = hslToRgb(secondaryHue, 100, 80);
     colorSecondary = rgbToHex(rgb[0], rgb[1], rgb[2]);
   };
@@ -70,7 +176,7 @@
   let maxT = 2.5;
 
   // transportation
-  let carMilesPerWeek = 10;
+  let carMilesPerWeek = loadNumber("carMilesPerWeek", 0);
   let carMPG = 30;
   $: carGPerGallon = 8887;
   $: carKgPerWeek = ((carMilesPerWeek / carMPG) * carGPerGallon) / 1000;
@@ -114,8 +220,8 @@
     ["Beans", 0.07, 0, 0],
     ["Coffee beans", 0.09, 0, 0],
     ["Alcohol", 0.19, 0, 0],
-    ["Cheese",0.43,0,0],
-    ["Milk",0.37,0,0]
+    ["Cheese", 0.43, 0, 0],
+    ["Milk", 0.37, 0, 0],
   ];
 
   $: foodKgPerYear = foodValues.reduce((total, item) => {
@@ -205,12 +311,61 @@
     purchaseKgPerYear;
 
   $: totalT = totalKgPerYear / 1000;
+
+  // updating url
+
+  // let parameters = {
+  //   tableTitle,
+  //   primaryHue,
+  //   secondaryHue,
+  //   carMilesPerWeek,
+  //   carMPG,
+  //   busMilesPerWeek,
+  //   trainMilesPerWeek,
+  //   flightHoursPerYear,
+  //   foodValues,
+  //   cookedMealsPerWeek,
+  //   homeSquareFeet,
+  //   homeDegreesAdjustedDownInWinter,
+  //   lightbulbQuantity,
+  //   lightBulbHoursPerDay,
+  //   computerHoursPerDay,
+  //   dishwasherUsesPerMonth,
+  //   clothesWasherUsesPerMonth,
+  //   clothesDryerUsesPerMonth,
+  //   fridgeQuantity,
+  //   gallonsOfHotWaterUsedPerDay,
+  //   purchaseValues,
+  // };
+
+  $: {
+    // let url = new URL(window.location.href);
+    storeValue("tableTitle", tableTitle);
+    storeNumber("primaryHue", primaryHue);
+    storeNumber("secondaryHue", secondaryHue);
+    storeNumber("carMilesPerWeek", carMilesPerWeek);
+    history.pushState(null, null, url);
+  }
+
+  onMount(() => {
+    // // get url params
+    // let url = new URL(window.location.href);
+
+    // let loaded = { ...parameters };
+
+    // for (var key in parameters) {
+    //   var parameter = url.searchParams.get(key);
+    //   loaded[key] = parameter;
+    // }
+    // parameters = loaded;
+
+    onPrimaryColorChange();
+    onSecondaryColorChange();
+  });
 </script>
 
 <main
   style="--color-primary: {colorPrimary}; --color-secondary: {colorSecondary};"
-  use:onPrimaryColorChange
-  use:onSecondaryColorChange
 >
   <div id="site-container">
     {#if !why}
