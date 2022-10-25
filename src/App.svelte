@@ -97,23 +97,25 @@
   // second number is servings per week
   // third number is kg per year
   let foodValues: Array<[string, number, number, number]> = [
-    ["Vegetables", 0.02, 0, 0],
-    ["Fruits", 0.01, 0, 0],
-    ["Nuts", 0.08, 0, 0],
-    ["Olive oil", 0.19, 0, 0],
-    ["Butter", 0.7, 0, 0],
-    ["Chicken", 0.04, 0, 0],
-    ["Eggs", 0.1, 0, 0],
-    ["Fish", 0.04, 0, 0],
-    ["Beef", 0.38, 0, 0],
-    ["Pork", 0.06, 0, 0],
-    ["Shrimp", 16.03, 0, 0],
-    ["Rice", 0.02, 0, 0],
-    ["Bread", 0.04, 0, 0],
-    ["Pastry", 0.12, 0, 0],
-    ["Beans", 0.02, 0, 0],
-    ["Coffee beans", 0.24, 0, 0],
-    ["Alcohol", 0.01, 0, 0],
+    ["Vegetables", 0.11, 0, 0],
+    ["Fruits", 0.23, 0, 0],
+    ["Nuts", 0.07, 0, 0],
+    ["Olive oil", 0.03, 0, 0],
+    ["Butter", 0.14, 0, 0],
+    ["Chicken", 0.53, 0, 0],
+    ["Eggs", 0.2, 0, 0],
+    ["Fish", 0.45, 0, 0],
+    ["Beef", 4.9, 0, 0],
+    ["Pork", 0.75, 0, 0],
+    ["Shrimp", 160.3, 0, 0],
+    ["Rice", 0.09, 0, 0],
+    ["Bread", 0.03, 0, 0],
+    ["Pastry", 0.38, 0, 0],
+    ["Beans", 0.07, 0, 0],
+    ["Coffee beans", 0.09, 0, 0],
+    ["Alcohol", 0.19, 0, 0],
+    ["Cheese",0.43,0,0],
+    ["Milk",0.37,0,0]
   ];
 
   $: foodKgPerYear = foodValues.reduce((total, item) => {
