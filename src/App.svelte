@@ -256,6 +256,8 @@
   // updating url
 
   $: {
+  
+  .debounce(400)
     // let url = new URL(window.location.href);
     storeValue("tableTitle", tableTitle);
     storeNumber("primaryHue", primaryHue);
