@@ -4,9 +4,21 @@
   import LineItem from "./lib/LineItem.svelte";
   import SectionTitle from "./lib/SectionTitle.svelte";
   import "slider-color-picker";
+  
+  
 
-  // let storedValues = new Map<string, any>();
+  let val='';
+	let timer;
 
+	const debounce = v => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			val = v;
+		}, 750);
+	}
+	
+	
+	
   // saving and loading
 
   let url = new URL(window.location.href);
@@ -88,8 +100,8 @@
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   }
 
-  const onPrimaryColorChange = () => {
-    let rgb = hslToRgb(primaryHue, 100, 60);
+  const onPrimaryColorChange = () => { 
+    let rgb = debounce(hslToRgb(primaryHue, 100, 60));
     colorPrimary = rgbToHex(rgb[0], rgb[1], rgb[2]);
   };
 
@@ -256,8 +268,6 @@
   // updating url
 
   $: {
-  
-  .debounce(400)
     // let url = new URL(window.location.href);
     storeValue("tableTitle", tableTitle);
     storeNumber("primaryHue", primaryHue);
