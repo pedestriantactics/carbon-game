@@ -8,11 +8,12 @@
   let val = "";
   let timer;
 
+  // this prevents security issues from firing off by updating the url and local storage slower
   const debounce = (v) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
       val = v;
-    }, 750);
+    }, 700);
   };
 
   // saving and loading
