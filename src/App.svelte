@@ -4,21 +4,17 @@
   import LineItem from "./lib/LineItem.svelte";
   import SectionTitle from "./lib/SectionTitle.svelte";
   import "slider-color-picker";
-  
-  
 
-  let val='';
-	let timer;
+  let val = "";
+  let timer;
 
-	const debounce = v => {
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			val = v;
-		}, 750);
-	}
-	
-	
-	
+  const debounce = (v) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      val = v;
+    }, 750);
+  };
+
   // saving and loading
 
   let url = new URL(window.location.href);
@@ -100,8 +96,8 @@
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   }
 
-  const onPrimaryColorChange = () => { 
-    let rgb = debounce(hslToRgb(primaryHue, 100, 60));
+  const onPrimaryColorChange = () => {
+    let rgb = hslToRgb(primaryHue, 100, 60);
     colorPrimary = rgbToHex(rgb[0], rgb[1], rgb[2]);
   };
 
@@ -268,41 +264,43 @@
   // updating url
 
   $: {
-    // let url = new URL(window.location.href);
-    storeValue("tableTitle", tableTitle);
-    storeNumber("primaryHue", primaryHue);
-    storeNumber("secondaryHue", secondaryHue);
-    storeNumber("carMilesPerWeek", carMilesPerWeek);
-    storeNumber("carMPG", carMPG);
-    storeNumber("evMilesPerWeek", evMilesPerWeek);
-    storeNumber("busMilesPerWeek", busMilesPerWeek);
-    storeNumber("trainMilesPerWeek", trainMilesPerWeek);
-    storeNumber("flightHoursPerYear", flightHoursPerYear);
+    debounce((event) => {
+      // let url = new URL(window.location.href);
+      storeValue("tableTitle", tableTitle);
+      storeNumber("primaryHue", primaryHue);
+      storeNumber("secondaryHue", secondaryHue);
+      storeNumber("carMilesPerWeek", carMilesPerWeek);
+      storeNumber("carMPG", carMPG);
+      storeNumber("evMilesPerWeek", evMilesPerWeek);
+      storeNumber("busMilesPerWeek", busMilesPerWeek);
+      storeNumber("trainMilesPerWeek", trainMilesPerWeek);
+      storeNumber("flightHoursPerYear", flightHoursPerYear);
 
-    foodValues.forEach((item) => {
-      storeNumber(item[0], item[2]);
+      foodValues.forEach((item) => {
+        storeNumber(item[0], item[2]);
+      });
+
+      storeNumber("cookedMealsPerWeek", cookedMealsPerWeek);
+      storeNumber("homeSquareFeet", homeSquareFeet);
+      storeNumber(
+        "homeDegreesAdjustedDownInWinter",
+        homeDegreesAdjustedDownInWinter
+      );
+      storeNumber("lightbulbQuantity", lightbulbQuantity);
+      storeNumber("lightBulbHoursPerDay", lightBulbHoursPerDay);
+      storeNumber("computerHoursPerDay", computerHoursPerDay);
+      storeNumber("dishwasherUsesPerMonth", dishwasherUsesPerMonth);
+      storeNumber("clothesWasherUsesPerMonth", clothesWasherUsesPerMonth);
+      storeNumber("clothesDryerUsesPerMonth", clothesDryerUsesPerMonth);
+      storeNumber("fridgeQuantity", fridgeQuantity);
+      storeNumber("gallonsOfHotWaterUsedPerDay", gallonsOfHotWaterUsedPerDay);
+
+      purchaseValues.forEach((item) => {
+        storeNumber(item[0], item[2]);
+      });
+
+      history.pushState(null, null, url);
     });
-
-    storeNumber("cookedMealsPerWeek", cookedMealsPerWeek);
-    storeNumber("homeSquareFeet", homeSquareFeet);
-    storeNumber(
-      "homeDegreesAdjustedDownInWinter",
-      homeDegreesAdjustedDownInWinter
-    );
-    storeNumber("lightbulbQuantity", lightbulbQuantity);
-    storeNumber("lightBulbHoursPerDay", lightBulbHoursPerDay);
-    storeNumber("computerHoursPerDay", computerHoursPerDay);
-    storeNumber("dishwasherUsesPerMonth", dishwasherUsesPerMonth);
-    storeNumber("clothesWasherUsesPerMonth", clothesWasherUsesPerMonth);
-    storeNumber("clothesDryerUsesPerMonth", clothesDryerUsesPerMonth);
-    storeNumber("fridgeQuantity", fridgeQuantity);
-    storeNumber("gallonsOfHotWaterUsedPerDay", gallonsOfHotWaterUsedPerDay);
-
-    purchaseValues.forEach((item) => {
-      storeNumber(item[0], item[2]);
-    });
-
-    history.pushState(null, null, url);
   }
 
   onMount(() => {
