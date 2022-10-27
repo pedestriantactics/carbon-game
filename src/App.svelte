@@ -5,9 +5,14 @@
   import SectionTitle from "./lib/SectionTitle.svelte";
   import "slider-color-picker";
 
+  // let storedValues = new Map<string, any>();
+
+  // saving and loading
+
   let url = new URL(window.location.href);
 
   function loadValue(key: string, defaultValue: string): string {
+    // add it to the stored variables if it's a type that should be loaded
     return (
       url.searchParams.get(key) ?? localStorage.getItem(key) ?? defaultValue
     );
@@ -15,6 +20,14 @@
 
   function loadNumber(key: string, defaultValue: number): number {
     return parseFloat(loadValue(key, defaultValue.toString()));
+  }
+
+  function storeStringOrNumber(key: string, value: any) {
+    if (typeof value === "string") {
+      storeValue(key, value);
+    } else if (typeof value === "number") {
+      storeNumber(key, value);
+    }
   }
 
   function storeValue(key: string, value: string) {
@@ -27,101 +40,19 @@
     storeValue(key, value.toString());
   }
 
-  let primaryHue = 220;
-  let secondaryHue = 200;
+  let primaryHue = loadNumber("primaryHue", 220);
+  // storedValues["primaryHue"] = primaryHue;
+  // storedValues.set("primaryHue", primaryHue);
+
+  let secondaryHue = loadNumber("secondaryHue", 200);
+  // storedValues.set("secondaryHue", secondaryHue);
+
   export let colorPrimary = "#ff0000";
   export let colorSecondary = "#ff0000";
-  let tableTitle = loadValue("tableTitle", "Example title") as string;
-  let textReadOnly = false;
 
-  // functions
-
-  // let url = this.URL;
-  // history.pushState(null, null, "?");
-
-  // let params = new URLSearchParams(url.search);
-
-  // // Add a third parameter.
-  // params.set("baz", "2");
-
-  // var params = document.getElementById("params");
-  // var results = document.getElementById("results");
-
-  // document
-  //   .querySelector("input")
-  //   .addEventListener("keyup", encodeParameterToUrl(this.value));
-
-  // function encodeParameterToUrl(string) {
-  //   params.innerText = this.value;
-  //   results.innerText = JSON.stringify(
-  //     getAllUrlParams("http://test.com/?" + this.value),
-  //     null,
-  //     2
-  //   );
-  // }
-
-  // function getAllUrlParams(url) {
-  //   // get query string from url (optional) or window
-  //   var queryString = url ? url.split("?")[1] : window.location.search.slice(1);
-
-  //   // we'll store the parameters here
-  //   var obj = {};
-
-  //   // if query string exists
-  //   if (queryString) {
-  //     // stuff after # is not part of query string, so get rid of it
-  //     queryString = queryString.split("#")[0];
-
-  //     // split our query string into its component parts
-  //     var arr = queryString.split("&");
-
-  //     for (var i = 0; i < arr.length; i++) {
-  //       // separate the keys and the values
-  //       var a = arr[i].split("=");
-
-  //       // set parameter name and value (use 'true' if empty)
-  //       var paramName = a[0];
-  //       var paramValue = typeof a[1] === "undefined" ? true : a[1];
-
-  //       // (optional) keep case consistent
-  //       paramName = paramName.toLowerCase();
-  //       if (typeof paramValue === "string")
-  //         paramValue = paramValue.toLowerCase();
-
-  //       // if the paramName ends with square brackets, e.g. colors[] or colors[2]
-  //       if (paramName.match(/\[(\d+)?\]$/)) {
-  //         // create key if it doesn't exist
-  //         var key = paramName.replace(/\[(\d+)?\]/, "");
-  //         if (!obj[key]) obj[key] = [];
-
-  //         // if it's an indexed array e.g. colors[2]
-  //         if (paramName.match(/\[\d+\]$/)) {
-  //           // get the index value and add the entry at the appropriate position
-  //           var index = /\[(\d+)\]/.exec(paramName)[1];
-  //           obj[key][index] = paramValue;
-  //         } else {
-  //           // otherwise add the value to the end of the array
-  //           obj[key].push(paramValue);
-  //         }
-  //       } else {
-  //         // we're dealing with a string
-  //         if (!obj[paramName]) {
-  //           // if it doesn't exist, create property
-  //           obj[paramName] = paramValue;
-  //         } else if (obj[paramName] && typeof obj[paramName] === "string") {
-  //           // if property does exist and it's a string, convert it to an array
-  //           obj[paramName] = [obj[paramName]];
-  //           obj[paramName].push(paramValue);
-  //         } else {
-  //           // otherwise add the property
-  //           obj[paramName].push(paramValue);
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   return obj;
-  // }
+  let tableTitle = loadValue("tableTitle", "Example title");
+  // storedValues["tableTitle"] = tableTitle;
+  // storedValues.set("tableTitle", tableTitle);
 
   function hslToRgb(h: number, s: number, l: number): [number, number, number] {
     h = h % 360;
@@ -177,22 +108,27 @@
 
   // transportation
   let carMilesPerWeek = loadNumber("carMilesPerWeek", 0);
-  let carMPG = 30;
+  let carMPG = loadNumber("carMPG", 20);
   $: carGPerGallon = 8887;
   $: carKgPerWeek = ((carMilesPerWeek / carMPG) * carGPerGallon) / 1000;
   $: carKgPerYear = carKgPerWeek * 52;
 
-  let busMilesPerWeek = 40;
+  $: KgPerKWhElectric = 0.39;
+  let evMilesPerWeek = loadNumber("evMilesPerWeek", 0);
+  $: evKgPerWeek = evMilesPerWeek * 0.25 * KgPerKWhElectric;
+  $: evKgPerYear = evKgPerWeek * 52;
+
+  let busMilesPerWeek = loadNumber("busMilesPerWeek", 0);
   $: busGPerMile = 200;
   $: busKgPerWeek = (busMilesPerWeek * busGPerMile) / 1000;
   $: busKgPerYear = busKgPerWeek * 52;
 
-  let trainMilesPerWeek = 0;
+  let trainMilesPerWeek = loadNumber("trainMilesPerWeek", 0);
   $: trainGPerMile = 177;
   $: trainKgPerWeek = (trainMilesPerWeek * trainGPerMile) / 1000;
   $: trainKgPerYear = trainKgPerWeek * 52;
 
-  let flightHoursPerYear = 0;
+  let flightHoursPerYear = loadNumber("flightHoursPerYear", 0);
   $: flightKgPerYear = flightHoursPerYear * 250;
 
   $: transportationTotalKgPerYear =
@@ -203,25 +139,25 @@
   // second number is servings per week
   // third number is kg per year
   let foodValues: Array<[string, number, number, number]> = [
-    ["Vegetables", 0.11, 0, 0],
-    ["Fruits", 0.23, 0, 0],
-    ["Nuts", 0.07, 0, 0],
-    ["Olive oil", 0.03, 0, 0],
-    ["Butter", 0.14, 0, 0],
-    ["Chicken", 0.53, 0, 0],
-    ["Eggs", 0.2, 0, 0],
-    ["Fish", 0.45, 0, 0],
-    ["Beef", 4.9, 0, 0],
-    ["Pork", 0.75, 0, 0],
-    ["Shrimp", 160.3, 0, 0],
-    ["Rice", 0.09, 0, 0],
-    ["Bread", 0.03, 0, 0],
-    ["Pastry", 0.38, 0, 0],
-    ["Beans", 0.07, 0, 0],
-    ["Coffee beans", 0.09, 0, 0],
-    ["Alcohol", 0.19, 0, 0],
-    ["Cheese", 0.43, 0, 0],
-    ["Milk", 0.37, 0, 0],
+    ["Vegetables", 0.11, loadNumber("Vegetables", 0), 0],
+    ["Fruits", 0.23, loadNumber("Fruits", 0), 0],
+    ["Nuts", 0.07, loadNumber("Nuts", 0), 0],
+    ["Olive oil", 0.03, loadNumber("Olive oil", 0), 0],
+    ["Butter", 0.14, loadNumber("Butter", 0), 0],
+    ["Chicken", 0.53, loadNumber("Chicken", 0), 0],
+    ["Eggs", 0.2, loadNumber("Eggs", 0), 0],
+    ["Fish", 0.45, loadNumber("Fish", 0), 0],
+    ["Beef", 4.9, loadNumber("Fish", 0), 0],
+    ["Pork", 0.75, loadNumber("Pork", 0), 0],
+    ["Shrimp", 160.3, loadNumber("Shrimp", 0), 0],
+    ["Rice", 0.09, loadNumber("Rice", 0), 0],
+    ["Bread", 0.03, loadNumber("Bread", 0), 0],
+    ["Pastry", 0.38, loadNumber("Pastry", 0), 0],
+    ["Beans", 0.07, loadNumber("Beans", 0), 0],
+    ["Coffee beans", 0.09, loadNumber("Coffee beans", 0), 0],
+    ["Alcohol", 0.19, loadNumber("Alcohol", 0), 0],
+    ["Cheese", 0.43, loadNumber("Cheese", 0), 0],
+    ["Milk", 0.37, loadNumber("Milk", 0), 0],
   ];
 
   $: foodKgPerYear = foodValues.reduce((total, item) => {
@@ -229,13 +165,16 @@
     return total + item[3];
   }, 0);
 
-  let cookedMealsPerWeek = 0;
+  let cookedMealsPerWeek = loadNumber("cookedMealsPerWeek", 0);
   $: cookedGPerMeal = 150;
   $: cookedMealsKgPerYear = (cookedMealsPerWeek * cookedGPerMeal * 52) / 1000;
 
   // home
-  let homeSquareFeet = 0;
-  let homeDegreesAdjustedDownInWinter = 0;
+  let homeSquareFeet = loadNumber("homeSquareFeet", 0);
+  let homeDegreesAdjustedDownInWinter = loadNumber(
+    "homeDegreesAdjustedDownInWinter",
+    0
+  );
   $: averageHouseKgForHeatingAndCooling = 2268;
   $: averageSquareFootageOfHome = 2301;
   $: totalKgFromHeating =
@@ -246,29 +185,28 @@
   $: homeKgPerYear = totalKgFromHeating - totalKgReduced;
 
   // electricity
-  $: KgPerKWhElectric = 0.39;
 
-  let lightbulbQuantity = 0;
-  let lightBulbHoursPerDay = 0;
+  let lightbulbQuantity = loadNumber("lightbulbQuantity", 0);
+  let lightBulbHoursPerDay = loadNumber("lightBulbHoursPerDay", 0);
   $: lightBulbKgPerYear =
     lightBulbHoursPerDay * 0.06 * lightbulbQuantity * KgPerKWhElectric * 365;
 
-  let computerHoursPerDay = 0;
+  let computerHoursPerDay = loadNumber("computerHoursPerDay", 0);
   $: computerKgPerYear = computerHoursPerDay * 0.047 * KgPerKWhElectric * 365;
 
-  let dishwasherUsesPerMonth = 0;
+  let dishwasherUsesPerMonth = loadNumber("dishwasherUsesPerMonth", 0);
   $: dishwasherKgPerYear =
     dishwasherUsesPerMonth * 1.44 * KgPerKWhElectric * 12;
 
-  let clothesWasherUsesPerMonth = 0;
+  let clothesWasherUsesPerMonth = loadNumber("clothesWasherUsesPerMonth", 0);
   $: clothesWasherKgPerYear =
     clothesWasherUsesPerMonth * 0.8 * KgPerKWhElectric * 12;
 
-  let clothesDryerUsesPerMonth = 0;
+  let clothesDryerUsesPerMonth = loadNumber("clothesDryerUsesPerMonth", 0);
   $: clothesDrykerKgPerYear =
     clothesDryerUsesPerMonth * 2.5 * KgPerKWhElectric * 12;
 
-  let fridgeQuantity = 0;
+  let fridgeQuantity = loadNumber("fridgeQuantity", 0);
   $: fridgeKgPerYear = fridgeQuantity * 408 * KgPerKWhElectric;
 
   $: totalElectricityKgPerYear =
@@ -280,7 +218,10 @@
     fridgeKgPerYear;
 
   // water
-  let gallonsOfHotWaterUsedPerDay = 0;
+  let gallonsOfHotWaterUsedPerDay = loadNumber(
+    "gallonsOfHotWaterUsedPerDay",
+    0
+  );
   $: hotWaterKgPerYear = gallonsOfHotWaterUsedPerDay * 0.39 * 0.26 * 365;
 
   // purchases
@@ -288,11 +229,11 @@
   // second number quanity
   // third number is kg per year
   let purchaseValues: Array<[string, number, number, number]> = [
-    ["iPhone", 78, 0, 0],
-    ["Laptop or iPad", 422.5, 0, 0],
-    ["Furniture item", 47, 0, 0],
-    ["Clothing item", 33.4, 0, 0],
-    ["Car", 8000, 0, 0],
+    ["iPhone", 78, loadNumber("iPhone", 0), 0],
+    ["Laptop or iPad", 422.5, loadNumber("Laptop", 0), 0],
+    ["Furniture item", 47, loadNumber("Furniture", 0), 0],
+    ["Clothing item", 33.4, loadNumber("Clothing item", 0), 0],
+    ["Car", 8000, loadNumber("Car", 0), 0],
   ];
 
   $: purchaseKgPerYear = purchaseValues.reduce((total, item) => {
@@ -314,36 +255,41 @@
 
   // updating url
 
-  // let parameters = {
-  //   tableTitle,
-  //   primaryHue,
-  //   secondaryHue,
-  //   carMilesPerWeek,
-  //   carMPG,
-  //   busMilesPerWeek,
-  //   trainMilesPerWeek,
-  //   flightHoursPerYear,
-  //   foodValues,
-  //   cookedMealsPerWeek,
-  //   homeSquareFeet,
-  //   homeDegreesAdjustedDownInWinter,
-  //   lightbulbQuantity,
-  //   lightBulbHoursPerDay,
-  //   computerHoursPerDay,
-  //   dishwasherUsesPerMonth,
-  //   clothesWasherUsesPerMonth,
-  //   clothesDryerUsesPerMonth,
-  //   fridgeQuantity,
-  //   gallonsOfHotWaterUsedPerDay,
-  //   purchaseValues,
-  // };
-
   $: {
     // let url = new URL(window.location.href);
     storeValue("tableTitle", tableTitle);
     storeNumber("primaryHue", primaryHue);
     storeNumber("secondaryHue", secondaryHue);
     storeNumber("carMilesPerWeek", carMilesPerWeek);
+    storeNumber("carMPG", carMPG);
+    storeNumber("evMilesPerWeek", evMilesPerWeek);
+    storeNumber("busMilesPerWeek", busMilesPerWeek);
+    storeNumber("trainMilesPerWeek", trainMilesPerWeek);
+    storeNumber("flightHoursPerYear", flightHoursPerYear);
+
+    foodValues.forEach((item) => {
+      storeNumber(item[0], item[2]);
+    });
+
+    storeNumber("cookedMealsPerWeek", cookedMealsPerWeek);
+    storeNumber("homeSquareFeet", homeSquareFeet);
+    storeNumber(
+      "homeDegreesAdjustedDownInWinter",
+      homeDegreesAdjustedDownInWinter
+    );
+    storeNumber("lightbulbQuantity", lightbulbQuantity);
+    storeNumber("lightBulbHoursPerDay", lightBulbHoursPerDay);
+    storeNumber("computerHoursPerDay", computerHoursPerDay);
+    storeNumber("dishwasherUsesPerMonth", dishwasherUsesPerMonth);
+    storeNumber("clothesWasherUsesPerMonth", clothesWasherUsesPerMonth);
+    storeNumber("clothesDryerUsesPerMonth", clothesDryerUsesPerMonth);
+    storeNumber("fridgeQuantity", fridgeQuantity);
+    storeNumber("gallonsOfHotWaterUsedPerDay", gallonsOfHotWaterUsedPerDay);
+
+    purchaseValues.forEach((item) => {
+      storeNumber(item[0], item[2]);
+    });
+
     history.pushState(null, null, url);
   }
 
@@ -396,7 +342,6 @@
             bind:value={tableTitle}
             disabled={!$editing}
             class:editable={$editing}
-            readonly={textReadOnly}
           />
           <hr />
           <SectionTitle
@@ -441,6 +386,13 @@
             title="Car miles per gallon"
             bind:inputValue={carMPG}
             indentLevel={1}
+          />
+          <LineItem
+            title="EV miles per week"
+            bind:inputValue={evMilesPerWeek}
+            outputValue={evKgPerYear}
+            indentLevel={1}
+            note="The average Tesla gets .25kwh per mile"
           />
           <LineItem
             title="Bus miles per week"
