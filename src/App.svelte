@@ -21,11 +21,19 @@
   // the default if nothing else is available
   let defaultRecipe =
     "/?tableTitle=Dan%27s+Recipe&primaryHue=326&secondaryHue=25&carMilesPerWeek=10&carMPG=25&evMilesPerWeek=0&busMilesPerWeek=10&trainMilesPerWeek=0&flightHoursPerYear=1&Vegetables=21&Fruits=21&Nuts=21&Olive+oil=7&Butter=5&Chicken=1&Eggs=3&Fish=0&Beef=0&Pork=1&Shrimp=0&Rice=7&Bread=7&Pastry=6&Beans=5&Coffee+beans=5&Alcohol=3&Cheese=1&Milk=1&cookedMealsPerWeek=12&homeSquareFeet=300&homeDegreesAdjustedDownInWinter=4&lightbulbQuantity=4&lightBulbHoursPerDay=3&computerHoursPerDay=8&dishwasherUsesPerMonth=2&clothesWasherUsesPerMonth=1&clothesDryerUsesPerMonth=1&fridgeQuantity=1&gallonsOfHotWaterUsedPerDay=3&iPhone=0&Laptop+or+iPad=0&Furniture+item=0&Clothing+item=0&Car=0";
+
+  function loadRecipe(inUrl: string) {
+    // add the slash if need be
+    if (!(inUrl[0] == "/")) {
+      inUrl = "/" + inUrl;
+    }
+    history.replaceState(null, null, inUrl);
+    url = new URL(window.location.href);
+  }
+
   // if nothing else is available use the default
   if (!url.toString().includes("?") && localStorage.length == 0) {
-    console.log("loading default");
-    history.replaceState(null, null, defaultRecipe);
-    url = new URL(window.location.href);
+    loadRecipe(defaultRecipe);
   }
 
   function loadValue(key: string, defaultValue: string): string {
