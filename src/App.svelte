@@ -5,15 +5,14 @@
   import SectionTitle from "./lib/SectionTitle.svelte";
   import "slider-color-picker";
 
-  let val = "";
   let timer;
 
   // this prevents security issues from firing off by updating the url and local storage slower
   const debounce = (v) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
-      val = v;
-    }, 700);
+      v();
+    }, 300);
   };
 
   // saving and loading
@@ -22,7 +21,6 @@
   // the default if nothing else is available
   let defaultRecipe =
     "/?tableTitle=Dan%21&primaryHue=13&secondaryHue=25&carMilesPerWeek=10&carMPG=25&evMilesPerWeek=0&busMilesPerWeek=10&trainMilesPerWeek=0&flightHoursPerYear=1&Vegetables=21&Fruits=21&Nuts=21&Olive+oil=7&Butter=5&Chicken=1&Eggs=3&Fish=0&Beef=0&Pork=1&Shrimp=0&Rice=7&Bread=7&Pastry=6&Beans=5&Coffee+beans=5&Alcohol=3&Cheese=1&Milk=1&cookedMealsPerWeek=12&homeSquareFeet=300&homeDegreesAdjustedDownInWinter=4&lightbulbQuantity=4&lightBulbHoursPerDay=3&computerHoursPerDay=8&dishwasherUsesPerMonth=2&clothesWasherUsesPerMonth=1&clothesDryerUsesPerMonth=1&fridgeQuantity=1&gallonsOfHotWaterUsedPerDay=3&iPhone=0&Laptop+or+iPad=0&Furniture+item=0&Clothing+item=0&Car=0";
-
   // if nothing else is available use the default
   if (!url.toString().includes("?") && localStorage.length == 0) {
     console.log("loading default");
@@ -69,7 +67,7 @@
   export let colorPrimary = "#ff0000";
   export let colorSecondary = "#ff0000";
 
-  let tableTitle = loadValue("tableTitle", "Example title");
+  let tableTitle = loadValue("tableTitle", "Recipe Title");
   // storedValues["tableTitle"] = tableTitle;
   // storedValues.set("tableTitle", tableTitle);
 
@@ -276,7 +274,6 @@
 
   $: {
     debounce((event) => {
-      // let url = new URL(window.location.href);
       storeValue("tableTitle", tableTitle);
       storeNumber("primaryHue", primaryHue);
       storeNumber("secondaryHue", secondaryHue);
