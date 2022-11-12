@@ -691,7 +691,7 @@
           </button>
         </div>
         <div class="why-container-inner">
-          <h2 style="overflow-wrap: break-word;">{window.location.href}</h2>
+          <p style="overflow-wrap: break-word;">{window.location.href}</p>
         </div>
       </div>
     {/if}
