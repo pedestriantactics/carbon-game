@@ -20,8 +20,7 @@
 
   // the default if nothing else is available
   let defaultRecipe =
-    "/?tableTitle=Dan%27s+Recipe&primaryHue=221&secondaryHue=184&carMilesPerWeek=10&carMPG=25&evMilesPerWeek=0&busMilesPerWeek=10&trainMilesPerWeek=0&flightHoursPerYear=1&Vegetables=21&Fruits=21&Nuts=21&Olive+oil=7&Butter=5&Chicken=1&Eggs=3&Fish=0&Beef=0&Pork=1&Shrimp=0&Rice=7&Bread=7&Pastry=6&Beans=5&Coffee+beans=5&Alcohol=3&Cheese=1&Milk=1&cookedMealsPerWeek=12&homeSquareFeet=300&homeDegreesAdjustedDownInWinter=4&lightbulbQuantity=4&lightBulbHoursPerDay=3&computerHoursPerDay=8&dishwasherUsesPerMonth=2&clothesWasherUsesPerMonth=1&clothesDryerUsesPerMonth=1&fridgeQuantity=1&gallonsOfHotWaterUsedPerDay=3&iPhone=0&Laptop+or+iPad=0&Furniture+item=0&Clothing+item=0&Car=0";
-
+    "/?tableTitle=Dan%27s+Recipe&primaryHue=23&secondaryHue=52&carMilesPerWeek=10&carMPG=25&evMilesPerWeek=0&busMilesPerWeek=10&trainMilesPerWeek=0&flightHoursPerYear=2&Vegetables=21&Fruits=21&Nuts=21&Olive+oil=7&Butter=5&Chicken=1&Eggs=3&Fish=0&Beef=0&Pork=1&Shrimp=0&Rice=7&Bread=7&Pastry=6&Beans=5&Coffee+beans=5&Alcohol=3&Cheese=1&Milk=1&cookedMealsPerWeek=12&homeSquareFeet=300&homeDegreesAdjustedDownInWinter=4&lightbulbQuantity=0&lightBulbHoursPerDay=0&computerHoursPerDay=8&dishwasherUsesPerMonth=2&clothesWasherUsesPerMonth=1&clothesDryerUsesPerMonth=1&fridgeQuantity=1&gallonsOfHotWaterUsedPerDay=3&iPhone=0&Laptop+or+iPad=0&Furniture+item=0&Clothing+item=0&Car=0&lightbulbLEDQuantity=2&lightBulbLEDHoursPerDay=3";
   function loadRecipe(inUrl: string) {
     // add the slash if need be
     if (!(inUrl[0] == "/")) {
@@ -128,6 +127,8 @@
 
   let why = false;
 
+  let sharing = false;
+
   // max tons
   let maxT = 2.5;
 
@@ -216,6 +217,15 @@
   $: lightBulbKgPerYear =
     lightBulbHoursPerDay * 0.06 * lightbulbQuantity * KgPerKWhElectric * 365;
 
+  let lightbulbLEDQuantity = loadNumber("lightbulbLEDQuantity", 0);
+  let lightBulbLEDHoursPerDay = loadNumber("lightBulbLEDHoursPerDay", 0);
+  $: lightBulbLEDKgPerYear =
+    lightBulbLEDHoursPerDay *
+    0.01 *
+    lightbulbLEDQuantity *
+    KgPerKWhElectric *
+    365;
+
   let computerHoursPerDay = loadNumber("computerHoursPerDay", 0);
   $: computerKgPerYear = computerHoursPerDay * 0.047 * KgPerKWhElectric * 365;
 
@@ -236,6 +246,7 @@
 
   $: totalElectricityKgPerYear =
     lightBulbKgPerYear +
+    lightBulbLEDKgPerYear +
     computerKgPerYear +
     dishwasherKgPerYear +
     clothesWasherKgPerYear +
@@ -304,6 +315,8 @@
       );
       storeNumber("lightbulbQuantity", lightbulbQuantity);
       storeNumber("lightBulbHoursPerDay", lightBulbHoursPerDay);
+      storeNumber("lightbulbLEDQuantity", lightbulbLEDQuantity);
+      storeNumber("lightBulbLEDHoursPerDay", lightBulbLEDHoursPerDay);
       storeNumber("computerHoursPerDay", computerHoursPerDay);
       storeNumber("dishwasherUsesPerMonth", dishwasherUsesPerMonth);
       storeNumber("clothesWasherUsesPerMonth", clothesWasherUsesPerMonth);
@@ -346,6 +359,19 @@
           {#if $editing}Done editing{:else}Edit recipe{/if}
         </button>
       </div>
+
+      {#if editing}
+        <div id="bottom-right">
+          <button
+            on:click={() => {
+              sharing = !sharing;
+              editing.update(() => false);
+            }}
+          >
+            {#if sharing}Done{:else}Share recipe{/if}
+          </button>
+        </div>
+      {/if}
     {/if}
 
     <div id="bottom-left">
@@ -371,7 +397,7 @@
           />
           <hr />
           <SectionTitle
-            title="Total yearly C02e emissions"
+            title="Total yearly CO2e emissions"
             total={totalT}
             suffix="t"
             roundDigits={2}
@@ -501,6 +527,18 @@
             indentLevel={2}
           />
           <LineItem
+            title="LED lightbulbs in home"
+            detail="Divide if you have roommates"
+            bind:inputValue={lightbulbLEDQuantity}
+            indentLevel={1}
+          />
+          <LineItem
+            title="LED lights hours per day"
+            bind:inputValue={lightBulbLEDHoursPerDay}
+            outputValue={lightBulbLEDKgPerYear}
+            indentLevel={2}
+          />
+          <LineItem
             title="Laptop hours per day"
             bind:inputValue={computerHoursPerDay}
             outputValue={computerKgPerYear}
@@ -614,7 +652,7 @@
             things we can do to ensure our future.
           </h2>
           <p id="why-note">
-            These recipes use C02e which means CO2 equivalent. Not everything
+            These recipes use CO2e which means CO2 equivalent. Not everything
             generates CO2 itself, like running a lightbulb, but the approximate
             CO2 emitted to generate the power to run the lightbulb is what’s
             being factored.
@@ -651,6 +689,11 @@
     position: fixed;
     bottom: 0.5em;
     left: 0.5em;
+  }
+  #bottom-right {
+    position: fixed;
+    bottom: 0.5em;
+    right: 0.5em;
   }
   .title {
     width: 100%;
