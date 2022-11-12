@@ -4,6 +4,7 @@
   import LineItem from "./lib/LineItem.svelte";
   import SectionTitle from "./lib/SectionTitle.svelte";
   import "slider-color-picker";
+  import { copy } from "svelte-copy";
 
   let timer;
 
@@ -126,8 +127,24 @@
   setContext("editing", editing);
 
   let why = false;
-
   let sharing = false;
+  let copied = false;
+
+  // function copyURLToClipboard() {
+  //   // Get the text field
+  //   var copyText = window.location.href;
+
+  //   // Select the text field
+  //   copyText.select();
+  //   document.execCommand("copy");
+
+  //   copied = true;
+  // }
+
+  // function copyURLToClipboard() {
+  //   var text = window.location.href;
+  //   copied = true;
+  // }
 
   // max tons
   let maxT = 2.5;
@@ -365,6 +382,7 @@
           <button
             on:click={() => {
               sharing = !sharing;
+              copied = false;
               editing.update(() => false);
             }}
           >
@@ -385,7 +403,7 @@
       </button>
     </div>
 
-    {#if !why}
+    {#if !why && !sharing}
       <div id="content-container">
         <div id="table-container">
           <input
@@ -634,8 +652,8 @@
     {/if}
 
     {#if why}
-      <div id="why-container">
-        <div id="why-container-inner">
+      <div class="why-container">
+        <div class="why-container-inner">
           <h2>
             CO2 emissions are kind of like calories. They don’t represent
             overall health, but if you’re struggling with your weight, it’s a
@@ -657,6 +675,23 @@
             CO2 emitted to generate the power to run the lightbulb is what’s
             being factored.
           </p>
+        </div>
+      </div>
+    {/if}
+
+    {#if sharing}
+      <div class="why-container">
+        <div class="why-container-inner">
+          <button
+            use:copy={window.location.href}
+            on:click={() => {
+              copied = true;
+            }}
+            >{#if !copied}Copy to clipboard{:else}Copied!{/if}
+          </button>
+        </div>
+        <div class="why-container-inner">
+          <h2 style="overflow-wrap: break-word;">{window.location.href}</h2>
         </div>
       </div>
     {/if}
@@ -723,20 +758,20 @@
     max-width: var(--width);
   }
 
-  #why-container {
+  .why-container {
     width: 100%;
     height: 100vh;
     display: grid;
     place-items: center;
   }
 
-  #why-container-inner {
+  .why-container-inner {
     max-width: var(--width);
     padding: 0.5rem;
   }
 
-  #why-container-inner p,
-  #why-container-inner h2 {
+  .why-container-inner p,
+  .why-container-inner h2 {
     text-align: center;
     margin-bottom: 0.8em;
   }
