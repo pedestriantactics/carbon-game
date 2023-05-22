@@ -376,6 +376,9 @@
 <main
   style="--color-primary: {colorPrimary}; --color-secondary: {colorSecondary};"
 >
+
+
+<div id="bg"></div>
   <div id="site-container">
     {#if !why}
       <div id="top-right">
@@ -708,7 +711,7 @@
 <style>
   :root {
     /* this is because the background color actually doesn't update correctly */
-    background-color: white;
+    /* background-color: white; */
     color: var(--color-primary);
     --width: 640px;
   }
@@ -748,7 +751,16 @@
   }
 
   #site-container {
+  }
+  
+  #bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
     background-color: var(--color-secondary);
+    /* background-color: red; */
+    /* move it to the back behind everything else */
+    z-index: -1;
   }
 
   #table-container {
@@ -774,7 +786,7 @@
 
   .why-container-inner {
     max-width: var(--width);
-    padding: 0.5rem;
+    margin: 1rem 0 1rem 0;
   }
 
   .why-container-inner p,
