@@ -151,9 +151,16 @@
 
   // transportation
   let carMilesPerWeek = loadNumber("carMilesPerWeek", 0);
+  // let carMPG = loadNumber("carMPG", 20);
+
+  // declare carMPG as loadNumber("carMPG", 20) but prevent it from being set to 0
   let carMPG = loadNumber("carMPG", 20);
+
   $: carGPerGallon = 8887;
   $: carKgPerWeek = ((carMilesPerWeek / carMPG) * carGPerGallon) / 1000;
+  // if carKgPerWeek is infinity or not a number
+  $: if (carKgPerWeek == Infinity || isNaN(carKgPerWeek)) carKgPerWeek = 0;
+
   $: carKgPerYear = carKgPerWeek * 52;
 
   $: KgPerKWhElectric = 0.39;
