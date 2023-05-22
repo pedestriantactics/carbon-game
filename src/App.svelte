@@ -175,7 +175,7 @@
   $: flightKgPerYear = flightHoursPerYear * 250;
 
   $: transportationTotalKgPerYear =
-    carKgPerYear + evKgPerYear + busKgPerYear + flightKgPerYear;
+    carKgPerYear + evKgPerYear + busKgPerYear + trainKgPerYear + flightKgPerYear;
 
   // food
   // first number is grams per serving
