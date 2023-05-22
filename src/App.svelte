@@ -701,7 +701,7 @@
 <style>
   :root {
     /* this is because the background color actually doesn't update correctly */
-    background-color: black;
+    background-color: white;
     color: var(--color-primary);
     --width: 640px;
   }
