@@ -58,11 +58,13 @@
   function storeValue(key: string, value: string) {
     url.searchParams.set(key, value);
     localStorage.setItem(key, value);
+    copied = false;
   }
 
   function storeNumber(key: string, value: number) {
     if (!value) value = 0;
     storeValue(key, value.toString());
+    copied = false;
   }
 
   let primaryHue = loadNumber("primaryHue", 220);
@@ -116,11 +118,13 @@
   const onPrimaryColorChange = () => {
     let rgb = hslToRgb(primaryHue, 100, 60);
     colorPrimary = rgbToHex(rgb[0], rgb[1], rgb[2]);
+    copied = false;
   };
-
+  
   const onSecondaryColorChange = () => {
     let rgb = hslToRgb(secondaryHue, 100, 80);
     colorSecondary = rgbToHex(rgb[0], rgb[1], rgb[2]);
+    copied = false;
   };
 
   const editing = writable(false);
@@ -390,13 +394,13 @@
       {#if editing}
         <div id="bottom-right">
           <button
-            on:click={() => {
-              sharing = !sharing;
-              copied = false;
-              editing.update(() => false);
-            }}
+          use:copy={window.location.href}
+          on:click={() => {
+            copied = true;
+          }}
           >
-            {#if sharing}Done{:else}Share recipe{/if}
+            <!-- {#if sharing}Done{:else}Share recipe{/if} -->
+            {#if !copied}Share recipe{:else}Copied to clipboard!{/if}
           </button>
         </div>
       {/if}
