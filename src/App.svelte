@@ -120,7 +120,7 @@
     colorPrimary = rgbToHex(rgb[0], rgb[1], rgb[2]);
     copied = false;
   };
-  
+
   const onSecondaryColorChange = () => {
     let rgb = hslToRgb(secondaryHue, 100, 80);
     colorSecondary = rgbToHex(rgb[0], rgb[1], rgb[2]);
@@ -186,7 +186,11 @@
   $: flightKgPerYear = flightHoursPerYear * 250;
 
   $: transportationTotalKgPerYear =
-    carKgPerYear + evKgPerYear + busKgPerYear + trainKgPerYear + flightKgPerYear;
+    carKgPerYear +
+    evKgPerYear +
+    busKgPerYear +
+    trainKgPerYear +
+    flightKgPerYear;
 
   // food
   // first number is grams per serving
@@ -380,9 +384,7 @@
 <main
   style="--color-primary: {colorPrimary}; --color-secondary: {colorSecondary};"
 >
-
-
-<div id="bg"></div>
+  <div id="bg" />
   <div id="site-container">
     {#if !why}
       <div id="top-right">
@@ -394,10 +396,10 @@
       {#if editing}
         <div id="bottom-right">
           <button
-          use:copy={window.location.href}
-          on:click={() => {
-            copied = true;
-          }}
+            use:copy={window.location.href}
+            on:click={() => {
+              copied = true;
+            }}
           >
             <!-- {#if sharing}Done{:else}Share recipe{/if} -->
             {#if !copied}Share recipe{:else}Copied to clipboard!{/if}
@@ -756,7 +758,7 @@
 
   #site-container {
   }
-  
+
   #bg {
     position: fixed;
     width: 100%;
@@ -790,7 +792,8 @@
 
   .why-container-inner {
     max-width: var(--width);
-    margin: 1rem 0 1rem 0;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
   }
 
   .why-container-inner p,
@@ -801,6 +804,11 @@
 
   #summary {
     border-bottom: 8px solid var(--color-primary);
+  }
+
+  #footer-container {
+    margin-bottom: 4rem;
+    padding-bottom: 4rem;
   }
 
   .color-container {
